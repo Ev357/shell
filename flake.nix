@@ -19,18 +19,21 @@
     };
   };
 
-  outputs =
-    { flake-parts, ... }@inputs:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      perSystem =
-        { pkgs, system, ... }:
-        {
-          devShells.default = pkgs.mkShell {
-            buildInputs = [
-              inputs.quickshell.packages.${system}.default
-            ];
-          };
+  outputs = {flake-parts, ...} @ inputs:
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      perSystem = {
+        pkgs,
+        system,
+        ...
+      }: {
+        devShells.default = pkgs.mkShell {
+          buildInputs = [
+            inputs.quickshell.packages.${system}.default
+          ];
         };
+
+        formatter = pkgs.alejandra;
+      };
 
       systems = [
         "x86_64-linux"
