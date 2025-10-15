@@ -12,32 +12,25 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
-    flake-parts.url = "github:hercules-ci/flake-parts";
     quickshell = {
       url = "github:quickshell-mirror/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = {flake-parts, ...} @ inputs:
-    flake-parts.lib.mkFlake {inherit inputs;} {
-      perSystem = {
-        pkgs,
-        system,
-        ...
-      }: {
-        devShells.default = pkgs.mkShell {
-          buildInputs = [
-            inputs.quickshell.packages.${system}.default
-          ];
-        };
+  outputs = {nixpkgs, ...} @ inputs: let
+    forAllSystems = nixpkgs.lib.genAttrs nixpkgs.lib.systems.flakeExposed;
+  in {
+    formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
-        formatter = pkgs.alejandra;
+    devShells = forAllSystems (system: let
+      pkgs = nixpkgs.legacyPackages.${system};
+    in {
+      default = pkgs.mkShell {
+        buildInputs = [
+          inputs.quickshell.packages.${system}.default
+        ];
       };
-
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-      ];
-    };
+    });
+  };
 }
