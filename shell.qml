@@ -2,16 +2,16 @@ import Quickshell
 import QtQuick
 
 PanelWindow {
-  anchors {
-    top: true
-    left: true
-    right: true
-  }
+    anchors {
+        top: true
+        left: true
+        right: true
+    }
 
-  implicitHeight: 30
+    implicitHeight: 30
 
-  Text {
-    anchors.centerIn: parent
-    text: "hello world"
-  }
+    Text {
+        anchors.centerIn: parent
+        text: "hello world"
+    }
 }
