@@ -30,6 +30,8 @@
         buildInputs = [
           inputs.quickshell.packages.${system}.default
         ];
+
+        QT_QML_GENERATE_QMLLS_INI = "ON";
       };
     });
   };
